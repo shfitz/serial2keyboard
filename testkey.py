@@ -1,28 +1,16 @@
-# Python Code
 import serial
-import keyboard
+import pyautogui
+import time
 
-# Set the correct serial port
-arduino_port = "/dev/tty.usbmodem744DBD7D50D02"  # Replace with your Arduino's serial port
-baud_rate = 115200
+# Open serial connection
+arduino = serial.Serial('/dev/tty.usbmodem744DBD7D50D02', 115200, timeout=1)
+time.sleep(2)  # Allow connection to establish
 
-# Establish serial connection
-try:
-    ser = serial.Serial(arduino_port, baud_rate)
-    print(f"Connected to {arduino_port} at {baud_rate} baud")
-except serial.SerialException as e:
-    print(f"Error: {e}")
-    exit()
-
-try:
-    while True:
-        if ser.in_waiting > 0:
-            data = ser.readline().decode('utf-8').strip()
-            if data == "A":
-                keyboard.press_and_release('a')
-            # Add more conditions for other data and key presses
-except KeyboardInterrupt:
-    print("Exiting...")
-finally:
-    ser.close()
-    print("Serial port closed")
+while True:
+    if arduino.in_waiting > 0:
+        command = arduino.readline().decode('utf-8').strip()
+        
+        if command == "A":
+            pyautogui.hotkey('A')
+        elif command == "D":
+            pyautogui.hotkey('D')
